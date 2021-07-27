@@ -1,11 +1,13 @@
 import axios from "axios";
 import React from "react";
+import { useContext } from "react";
 import { useState, useEffect } from "react";
 import { Badge, Button, Col, Container, Row } from "react-bootstrap";
 import { FcApproval, FcFullTrash } from "react-icons/fc";
+import { AllContextData } from "../../App";
 
 const ShowTask = () => {
-  const [allTask, setAllTask] = useState([]);
+  const {allTask, setAllTask} = useContext(AllContextData)
 
   useEffect(() => {
     axios.get("http://localhost:8000/task").then((data) => {
@@ -18,7 +20,22 @@ const ShowTask = () => {
         method: 'PUT',
       })
       .then((response) => response.json())
-      .then((data) => console.log(data))
+      .then((data) => {
+        console.log(data)
+        if(data){
+          const da = allTask.map(t => {
+            if(t._id === id) {
+              const updatedItem = {
+                ...t,
+                status: 'done',
+              }
+              return updatedItem;
+            }
+            return t;
+            })
+            setAllTask(da);
+        }
+      })
   }
 
   const deleteTask = (id) => {
@@ -27,6 +44,10 @@ const ShowTask = () => {
   })
   .then(data => {
       console.log(data);
+      if(data){
+        const remainingTask = allTask.filter(task => task._id !== id);
+        setAllTask(remainingTask)
+      }
   })
   }
 

@@ -1,9 +1,12 @@
 import axios from "axios";
 import React from "react";
+import { useContext } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
+import { AllContextData } from "../../App";
 
 const TaskAdd = () => {
+  const {allTask, setAllTask} = useContext(AllContextData);
   const {
     register,
     handleSubmit,
@@ -23,8 +26,12 @@ const TaskAdd = () => {
       .then(data => {
           console.log(data)
           event.target.reset();
+          if(data) {
+            setAllTask([...allTask, task]);
+          }
       })
     };
+    console.log(allTask);
   return (
     <>
       <Container>
